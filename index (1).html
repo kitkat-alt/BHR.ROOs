@@ -1,0 +1,3649 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HORIZON - คอนโดมิเนียม</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <style>
+        :root {
+            /* Vivid & Premium Colors */
+            --primary: #4338ca;
+            /* Indigo 700 */
+            --primary-light: #6366f1;
+            /* Indigo 500 */
+            --accent: #f43f5e;
+            /* Rose 500 */
+
+            --bg-page: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+
+            /* Status Tags */
+            --tag-post: #10b981;
+            --tag-pending: #f59e0b;
+            --tag-contract: #3b82f6;
+            --tag-trash: #ef4444;
+
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            background-color: var(--bg-page);
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* Animated Mesh Gradient Background */
+            background:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(34, 211, 238, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* --- Utility Classes --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: 0.3s;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            margin: 0 -20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-action {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #nav-actions {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* Default for Public */
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            text-align: center;
+            padding: 20px 20px 30px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            background: linear-gradient(to right, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        /* --- Search Bar --- */
+        .search-wrapper {
+            background: white;
+            padding: 4px;
+            /* Reduced from 6px */
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            /* Reduced from 4px */
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+            /* Softer shadow */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transform: scale(1);
+            transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            max-width: 95%;
+            /* Prevent touching edges on small screens */
+            margin: 0 auto;
+            /* Center it */
+        }
+
+        .search-wrapper:hover {
+            transform: scale(1.01);
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            /* Reduced from 10px 20px */
+            border-radius: var(--radius-full);
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .filter-btn:hover {
+            color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .filter-btn.active {
+            background: var(--text-main);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-left: 5px;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+        }
+
+        /* --- Content Area --- */
+        .content-area {
+            padding-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .count-badge {
+            background: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Room Cards --- */
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            min-height: 100px;
+            /* Ensure drop area */
+            border: 2px dashed transparent;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .image-preview-grid.drag-over {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            transform: scale(1.02);
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-img-container {
+            position: relative;
+            width: 100%;
+            padding-top: 66%;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .card-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .room-card:hover .card-img {
+            transform: scale(1.1);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-align: center;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .card-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-info i {
+            color: var(--primary-light);
+            font-size: 0.8rem;
+        }
+
+        .card-price {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* --- Admin List Item --- */
+        .admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .admin-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .admin-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-light);
+        }
+
+        .item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 15px;
+            background: #eee;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .item-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .item-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f1f5f9;
+        }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-box {
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #fcfcfc;
+        }
+
+        /* --- Forms --- */
+        .form-section {
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.01);
+        }
+
+        .form-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .premium-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-upload:hover {
+            border-color: var(--primary);
+            background: #e0e7ff;
+        }
+
+        .premium-upload i {
+            font-size: 2rem;
+            color: var(--primary-light);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .premium-upload span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .file-link {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Admin Filters */
+        .admin-filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+
+        .af-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .af-btn:hover {
+            background: #f8fafc;
+        }
+
+        .af-btn.active {
+            background: var(--text-main);
+            color: white;
+            border-color: var(--text-main);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .lb-prev {
+            left: 20px;
+        }
+
+        .lb-next {
+            right: 20px;
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            z-index: 2500;
+            transition: 0.3s;
+            padding: 30px;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 14px;
+            margin-bottom: 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .sidebar-menu li:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .btn-icon-circle:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-view-contract {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #eff6ff;
+            color: var(--primary);
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-view-contract:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
+        }
+
+        /* --- Animations --- */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2400;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Image Grid */
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .upload-box {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary);
+            background: #e0e7ff;
+        }
+
+        .upload-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-add {
+            color: #94a3b8;
+            font-size: 1.5rem;
+        }
+
+        .upload-add:hover {
+            color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .del-img {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ef4444;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* LOADING OVERLAY (Full Screen) */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* NOTIFICATION LIST */
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .notif-item {
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-item:hover {
+            background: #fee2e2;
+            transform: translateX(5px);
+        }
+
+        .notif-text {
+            font-size: 0.95rem;
+            color: #b91c1c;
+            font-weight: 500;
+        }
+
+        .notif-sub {
+            font-size: 0.8rem;
+            color: #ef4444;
+        }
+
+        /* ADMIN LIST ITEM - NEW STYLE */
+        .room-list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .room-list-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .room-list-item:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-light);
+        }
+
+        .list-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 15px;
+            background: #eee;
+        }
+
+        .list-info {
+            flex: 1;
+        }
+
+        .list-top {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        /* Updated */
+        .list-room-no {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .list-room-type {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .list-price {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.95rem;
+            margin-left: 8px;
+        }
+
+        /* Updated */
+        .list-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .list-status-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f1f5f9;
+        }
+
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .room-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 15px 0;
+            }
+
+            .modal-box {
+                width: 95%;
+                max-height: 95vh;
+            }
+        }
+
+        /* --- Toast Notifications --- */
+        .toast-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            background: white;
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-width: 300px;
+            font-weight: 500;
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .toast-item.success {
+            border-left-color: #10b981;
+        }
+
+        .toast-item.success i {
+            color: #10b981;
+        }
+
+        .toast-item.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-item.error i {
+            color: #ef4444;
+        }
+
+        .toast-item.info {
+            border-left-color: var(--primary);
+        }
+
+        .toast-item.info i {
+            color: var(--primary);
+        }
+
+        .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            color: #cbd5e1;
+            transition: 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--text-main);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOutRight {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* --- Admin Header Improvements --- */
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: white;
+            color: var(--text-main);
+            transition: 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .btn-icon-circle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+
+
+        /* --- Notification Sidebar --- */
+        .notification-sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            z-index: 3000;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+        }
+
+        .notification-sidebar.active {
+            right: 0;
+        }
+
+        .notif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .notif-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #b91c1c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notif-filter-bar {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .notif-filter-btn {
+            flex: 1;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .notif-filter-btn.active {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            padding: 12px 15px;
+            background: #fef2f2;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .notif-item:hover {
+            transform: translateX(-5px);
+            background: #fee2e2;
+        }
+
+        .notif-sub {
+            font-size: 0.75rem;
+            color: #7f1d1d;
+            margin-top: 2px;
+        }
+
+        .noti-wrapper {
+            position: relative;
+        }
+
+        .noti-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
+        }
+
+        /* --- PRINT LAYOUT (A4 Landscape) --- */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            body>*:not(#print-area) {
+                display: none !important;
+            }
+
+            #print-area {
+                display: flex !important;
+                flex-direction: column;
+                width: 297mm;
+                height: 210mm;
+                padding: 10mm;
+                box-sizing: border-box;
+                background: white;
+                position: relative;
+            }
+
+            /* Header/Logo for Print (Optional) */
+            .print-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-bottom: 5mm;
+                border-bottom: 2px solid var(--primary);
+                padding-bottom: 2mm;
+            }
+
+            .print-gallery {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: 5mm;
+                flex: 1;
+                /* Fills available space */
+                max-height: 140mm;
+                /* Limit height */
+                margin-bottom: 5mm;
+            }
+
+            .print-img-box {
+                width: 100%;
+                height: 100%;
+                border-radius: 8pt;
+                overflow: hidden;
+                background: #f1f5f9;
+                box-shadow: 0 4pt 10pt rgba(0, 0, 0, 0.1);
+                border: 1px solid #e2e8f0;
+            }
+
+            .print-img-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            /* Modern Clean Footer */
+            .print-footer {
+                height: 48mm;
+                /* Specific height */
+                display: flex;
+                background: #f8fafc;
+                border-radius: 12pt;
+                padding: 5mm;
+                border: 1pt solid #cbd5e1;
+            }
+
+            .pf-col {
+                padding: 0 5mm;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .pf-info {
+                flex: 1.3;
+                border-right: 1pt dashed #cbd5e1;
+            }
+
+            .pf-info h1 {
+                margin: 0;
+                font-size: 24pt;
+                font-weight: 900;
+                color: var(--text-main);
+                line-height: 1;
+                text-transform: uppercase;
+            }
+
+            .pf-info h1 span {
+                color: var(--primary);
+            }
+
+            .pf-info p {
+                margin: 2mm 0 0 0;
+                font-size: 14pt;
+                font-weight: 600;
+                color: #64748b;
+                letter-spacing: 0.5px;
+            }
+
+            .pf-price {
+                flex: 1;
+                border-right: 1pt dashed #cbd5e1;
+                padding-left: 10mm;
+            }
+
+            .pf-price-item {
+                display: flex;
+                align-items: baseline;
+                width: 100%;
+                justify-content: space-between;
+                margin-bottom: 1mm;
+            }
+
+            .pf-price-label {
+                font-size: 11pt;
+                font-weight: 700;
+                color: #94a3b8;
+                text-transform: uppercase;
+            }
+
+            .pf-price-val {
+                font-size: 18pt;
+                font-weight: 800;
+                font-family: 'Prompt', sans-serif;
+            }
+
+            .pf-p-rent {
+                color: var(--primary);
+            }
+
+            .pf-p-sell {
+                color: var(--text-main);
+            }
+
+            .pf-contact {
+                flex: 0.8;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 5mm;
+            }
+
+            .pf-c-text {
+                text-align: right;
+            }
+
+            .pf-c-label {
+                font-size: 9pt;
+                font-weight: 700;
+                color: var(--primary);
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 2pt;
+            }
+
+            .pf-c-value {
+                font-size: 16pt;
+                font-weight: 900;
+                color: var(--text-main);
+                line-height: 1;
+            }
+
+            .pf-qr {
+                width: 35mm;
+                height: 35mm;
+                border-radius: 4pt;
+                border: 2pt solid white;
+                box-shadow: 0 4pt 10pt rgba(0, 0, 0, 0.05);
+            }
+        }
+
+        /* Sidebar & FAB Styles */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 2100;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: auto;
+            width: 280px;
+            height: 100%;
+            background: white;
+            z-index: 2200;
+            transform: translateX(100%);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-main);
+            font-weight: 600;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .sidebar-menu-item:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .sidebar-menu-item i {
+            width: 35px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-menu-item.danger {
+            color: #ef4444;
+            margin-top: auto;
+        }
+
+        .sidebar-menu-item.danger:hover {
+            background: #fef2f2;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 3000;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .fab-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            box-shadow: 0 10px 25px rgba(67, 56, 202, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            transition: transform 0.2s;
+        }
+
+        .fab-btn:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        @media print {
+
+            .fab-container,
+            .main-sidebar,
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+
+
+        .btn-icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1.1rem;
+        }
+
+        .btn-icon-circle:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .noti-wrapper {
+            position: relative;
+        }
+
+        .noti-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mobile 2-Column Grid */
+        @media (max-width: 600px) {
+            .room-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+                margin-bottom: 2px;
+            }
+
+            .card-info {
+                font-size: 0.75rem;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+
+            .card-info span {
+                gap: 3px;
+            }
+
+            .card-price {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+
+            .card-tag {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+                top: 8px;
+                left: 8px;
+            }
+        }
+
+        /* Modern Language Switch */
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            margin-right: 15px;
+            transition: 0.2s;
+        }
+
+        .lang-switch:hover {
+            border-color: var(--primary);
+        }
+
+        .lang-opt {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #94a3b8;
+            transition: 0.2s;
+            line-height: 1;
+        }
+
+        .lang-opt.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            font-size: 0.95rem;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(220, 38, 38, 0.95);
+        }
+
+        .toast.success {
+            background: rgba(22, 163, 74, 0.95);
+        }
+    </style>
+</head>
+
+<body class="public-mode">
+
+    <!-- LOADING OVERLAY -->
+    <div id="saving-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="margin-top: 20px; color: var(--text-main);">Saving data...</h3>
+        <p style="color: var(--text-muted);">Please wait, do not close the window</p>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- PRINT AREA (Hidden by default) -->
+    <div id="print-area" style="display:none;">
+        <div class="print-gallery" id="print-gallery"></div>
+        <div class="print-footer">
+            <div class="pf-col pf-info">
+                <h1><span id="p-type">STUDIO</span> <span id="p-number" style="color:var(--tag-contract);">12/402</span>
+                </h1>
+                <p>SIZE: <span id="p-size">35</span> SQM / FL <span id="p-floor">12</span></p>
+            </div>
+            <div class="pf-col pf-price">
+                <div class="pf-price-item">
+                    <span class="pf-price-label">RENT:</span>
+                    <span class="pf-price-val pf-p-rent" id="p-rent">฿15,000</span>
+                </div>
+                <div class="pf-price-item">
+                    <span class="pf-price-label">SALE:</span>
+                    <span class="pf-price-val pf-p-sell" id="p-sell">฿3,200,000</span>
+                </div>
+            </div>
+            <div class="pf-col pf-contact">
+                <div class="pf-c-text">
+                    <div class="pf-c-label">LINE ID</div>
+                    <div class="pf-c-value">@052adooe</div>
+                </div>
+                <!-- Using fixed QR for Line ID as requested -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=16a34a&data=https://line.me/ti/p/@052adooe"
+                    class="pf-qr">
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. NAVBAR -->
+    <div class="container">
+        <nav class="navbar" id="navbar">
+
+            <div id="nav-actions" style="display:flex; align-items:center;">
+                <div class="lang-switch" onclick="toggleLang()">
+                    <span class="lang-opt active" id="lang-switch-th">TH</span>
+                    <span class="lang-opt" id="lang-switch-en">EN</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 2. PUBLIC HERO & SEARCH -->
+    <div id="public-section" class="container">
+        <div class="hero-section">
+            <h1 class="hero-title" onclick="handleSecretLogin()" style="cursor:pointer;" title="Triple tap to login">
+                HORIZON</h1>
+            <p class="hero-subtitle" id="hero-subtitle-text">Line ID : @052adooe</p>
+
+            <div class="search-wrapper">
+                <div class="filter-group" style="display:flex; gap:5px; padding:5px;">
+                    <button class="filter-btn active" data-filter="Studio" onclick="filterList('Studio', this)"><span
+                            data-i18n="filter_studio">Studio</span></button>
+                    <button class="filter-btn" data-filter="1 Bedroom" onclick="filterList('1 Bedroom', this)">
+                        <span data-i18n="filter_1bed">1 Bed</span></button>
+                    <button class="filter-btn" data-filter="2 Bedroom" onclick="filterList('2 Bedroom', this)">
+                        <span data-i18n="filter_2bed">2 Bed</span></button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="section-header">
+                <div class="section-title">Available Rooms</div>
+                <div class="count-badge" id="room-count">0 Items</div>
+            </div>
+
+            <div id="main-loader" style="text-align:center; padding:60px; display:none;">
+                <i class="fas fa-circle-notch fa-spin" style="font-size:2.5rem; color:var(--primary);"></i>
+            </div>
+
+            <div id="room-list-container" class="room-grid"></div>
+        </div>
+    </div>
+
+    <!-- 3. ADMIN SECTION (Hidden by default) -->
+    <div id="admin-section" class="container hidden" style="margin-top:20px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;"></div>
+        <div class="admin-filter-bar">
+            <!-- Removed "All" button, Defaulting to Post -->
+            <button class="af-btn active" onclick="filterList('post', this)"><span
+                    data-i18n="af_avail">ว่าง</span></button>
+            <button class="af-btn" onclick="filterList('pending', this)"><span
+                    data-i18n="af_pending">รอดำเนินการ</span></button>
+            <button class="af-btn" onclick="filterList('contract', this)"><span
+                    data-i18n="af_contract">ติดสัญญา</span></button>
+
+        </div>
+        <div id="admin-loader" style="text-align:center; padding:60px; display:none;">
+            <i class="fas fa-circle-notch fa-spin" style="font-size:2.5rem; color:var(--primary);"></i>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width:380px; padding:40px; text-align:center;">
+            <div
+                style="width:60px; height:60px; background:linear-gradient(135deg, var(--primary), var(--accent)); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; color:white; font-size:1.8rem; box-shadow:0 10px 20px rgba(99, 102, 241, 0.3);">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2 style="margin-bottom:10px; font-weight:700;"><span data-i18n="login_title">Admin Login</span></h2>
+            <p style="color:var(--text-muted); margin-bottom:30px; font-size:0.95rem;"><span
+                    data-i18n="login_desc">Please enter password to access</span>
+            </p>
+            <form onsubmit="handleLogin(event)">
+                <input type="password" id="login-pass" class="form-input" placeholder="Passcode" required
+                    style="width:100%; padding:14px; border:2px solid #e2e8f0; border-radius:14px; text-align:center; font-size:1.2rem; letter-spacing:3px; outline:none; transition:0.2s;"
+                    onfocus="this.style.borderColor='var(--primary)'">
+                <button type="submit" id="btn-login-submit" class="btn-primary" style="margin-top:20px; width:100%;">
+                    <span id="login-text" data-i18n="btn_login">Login</span>
+                </button>
+            </form>
+            <button onclick="toggleLogin()"
+                style="background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer;"><span
+                    data-i18n="btn_cancel">Cancel</span></button>
+        </div>
+    </div>
+
+
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-box" style="max-width:400px;">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-cog" style="color:var(--text-muted); margin-right:10px;"></i>
+                    <span data-i18n="set_title">ตั้งค่าเว็บไซต์</span>
+                </div>
+                <button onclick="closeModal('settings-modal')" class="btn-action"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding:0;">
+                <!-- VIEW: MENU -->
+                <div id="set-view-menu" style="padding:20px;">
+                    <div onclick="switchSetView('site')"
+                        style="padding:15px; border-radius:12px; background:var(--bg-card); border:1px solid var(--border-color); display:flex; align-items:center; cursor:pointer; margin-bottom:10px; transition:0.2s;"
+                        onmouseover="this.style.borderColor='var(--primary)'"
+                        onmouseout="this.style.borderColor='var(--border-color)'">
+                        <div
+                            style="width:40px; height:40px; border-radius:10px; background:#e0e7ff; color:var(--primary); display:flex; align-items:center; justify-content:center; margin-right:15px; font-size:1.2rem;">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; color:var(--text-main);"><span
+                                    data-i18n="set_view_menu">ข้อมูลเว็บไซต์</span></div>
+                            <div style="font-size:0.85rem; color:var(--text-muted);"><span
+                                    data-i18n="set_view_desc_site">จัดการลิงก์ Line และแผนที่</span></div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:var(--text-muted);"></i>
+                    </div>
+
+                    <div onclick="switchSetView('security')"
+                        style="padding:15px; border-radius:12px; background:var(--bg-card); border:1px solid var(--border-color); display:flex; align-items:center; cursor:pointer; transition:0.2s;"
+                        onmouseover="this.style.borderColor='var(--primary)'"
+                        onmouseout="this.style.borderColor='var(--border-color)'">
+                        <div
+                            style="width:40px; height:40px; border-radius:10px; background:#fef2f2; color:#ef4444; display:flex; align-items:center; justify-content:center; margin-right:15px; font-size:1.2rem;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; color:var(--text-main);"><span
+                                    data-i18n="set_view_sec">ความปลอดภัย</span></div>
+                            <div style="font-size:0.85rem; color:var(--text-muted);"><span
+                                    data-i18n="set_view_desc_sec">เปลี่ยนรหัสผ่านผู้ดูแลระบบ</span></div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:var(--text-muted);"></i>
+                    </div>
+                </div>
+
+                <!-- VIEW: SITE DATA -->
+                <div id="set-view-site" style="display:none; padding:20px;">
+                    <button onclick="switchSetView('menu')"
+                        style="background:none; border:none; color:var(--text-main); font-weight:700; margin-bottom:15px; cursor:pointer; display:flex; align-items:center;"><i
+                            class="fas fa-arrow-left" style="margin-right:8px;"></i> <span
+                            data-i18n="btn_back">ย้อนกลับ</span></button>
+                    <form onsubmit="saveSiteSettings(event)">
+                        <div style="margin-bottom:15px;">
+                            <label class="form-label"><i class="fab fa-line" style="color:#06c755;"></i> <span
+                                    data-i18n="lbl_line">Line Official
+                                    Link</span></label>
+                            <input type="text" id="set-line-url" class="form-input"
+                                placeholder="https://line.me/ti/p/...">
+                        </div>
+                        <div style="margin-bottom:25px;">
+                            <label class="form-label"><i class="fas fa-map-marked-alt" style="color:#ef4444;"></i>
+                                <span data-i18n="lbl_map">Google Maps Link</span></label>
+                            <input type="text" id="set-map-url" class="form-input"
+                                placeholder="https://maps.app.goo.gl/...">
+                        </div>
+                        <button type="submit" class="btn-primary" style="width:100%;"><i class="fas fa-save"></i>
+                            <span data-i18n="btn_save">บันทึกข้อมูล</span></button>
+                    </form>
+                </div>
+
+                <!-- VIEW: SECURITY -->
+                <div id="set-view-security" style="display:none; padding:20px;">
+                    <button onclick="switchSetView('menu')"
+                        style="background:none; border:none; color:var(--text-main); font-weight:700; margin-bottom:15px; cursor:pointer; display:flex; align-items:center;"><i
+                            class="fas fa-arrow-left" style="margin-right:8px;"></i> <span
+                            data-i18n="btn_back">ย้อนกลับ</span></button>
+                    <form onsubmit="saveSecuritySettings(event)">
+                        <div style="margin-bottom:15px;">
+                            <label class="form-label"><span data-i18n="lbl_old_pass">รหัสผ่านปัจจุบัน</span></label>
+                            <input type="password" id="set-old-pass" class="form-input" placeholder="••••••">
+                        </div>
+                        <div style="margin-bottom:25px;">
+                            <label class="form-label"><span data-i18n="lbl_new_pass">รหัสผ่านใหม่</span></label>
+                            <input type="password" id="set-new-pass" class="form-input" data-i18n="ph_new_pass"
+                                placeholder="ตั้งรหัสผ่านใหม่">
+                        </div>
+                        <button type="submit" class="btn-primary" style="width:100%;"><i class="fas fa-save"></i>
+                            <span data-i18n="btn_save">บันทึกข้อมูล</span></button>
+                        เปลี่ยนรหัสผ่าน</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT MODAL -->
+    <div class="modal-overlay" id="contact-modal" style="z-index: 9999;">
+        <div class="modal-box" style="max-width:320px; text-align:center; padding:30px;">
+            <div style="font-size:1.5rem; font-weight:800; margin-bottom:10px; color:var(--text-main);">Contact Us</div>
+            <p style="color:var(--text-muted); margin-bottom:25px; font-size:0.95rem;">Choose your preferred channel</p>
+
+            <a id="btn-contact-line" href="#" target="_blank"
+                style="display:flex; align-items:center; justify-content:center; gap:10px; background:#06c755; color:white; text-decoration:none; padding:12px; border-radius:12px; font-weight:700; margin-bottom:10px; transition:0.2s;">
+                <i class="fab fa-line" style="font-size:1.4rem;"></i> Chat via LINE
+            </a>
+
+            <a id="btn-contact-map" href="#" target="_blank"
+                style="display:flex; align-items:center; justify-content:center; gap:10px; background:white; color:#ef4444; border:1px solid #ef4444; text-decoration:none; padding:12px; border-radius:12px; font-weight:700; transition:0.2s;">
+                <i class="fas fa-map-marked-alt" style="font-size:1.2rem;"></i> Open Map
+            </a>
+
+            <button onclick="closeModal('contact-modal')"
+                style="background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer; font-size:0.9rem;">Close</button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION RIGHT SIDEBAR -->
+    <div class="sidebar-overlay" id="notif-overlay" onclick="toggleNotifSidebar()"></div>
+    <div class="notification-sidebar" id="notif-sidebar">
+        <div class="notif-header">
+            <div class="notif-title"><i class="fas fa-exclamation-circle"></i> สัญญาใกล้หมด</div>
+            <button onclick="toggleNotifSidebar()" class="btn-icon-circle"
+                style="width:32px; height:32px; font-size:0.9rem;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="notif-filter-bar">
+            <button class="notif-filter-btn active" onclick="filterNotif(30, this)">30 วัน</button>
+            <button class="notif-filter-btn" onclick="filterNotif(60, this)">60 วัน</button>
+            <button class="notif-filter-btn" onclick="filterNotif(90, this)">90 3วัน</button>
+        </div>
+
+        <div id="notification-list" class="notif-list">
+            <!-- Items injected via JS -->
+        </div>
+    </div>
+
+    <!-- ADD/EDIT MODAL -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">จัดการข้อมูลห้อง</div>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="document.getElementById('room-form').requestSubmit()" class="btn-action save-btn"
+                        style="background:var(--primary); color:white; padding:8px 20px;"><i class="fas fa-save"></i>
+                        บันทึก</button>
+                    <button onclick="closeModal('edit-modal')" class="btn-action" style="padding:8px 12px;"><i
+                            class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="room-form">
+                    <input type="hidden" id="room-id">
+                    <input type="hidden" id="existing-owner-contract">
+                    <input type="hidden" id="existing-tenant-contract">
+
+                    <!-- Section 1 -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-info-circle"></i> ข้อมูลทั่วไป</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                            <div><label class="form-label">เลขห้อง <span style="color:#ef4444">*</span></label><input
+                                    type="text" id="inp-room-number" class="form-input" required
+                                    placeholder="เช่น 12/34"></div>
+                            <div>
+                                <label class="form-label">ประเภท</label>
+                                <select id="inp-room-type" class="form-select">
+                                    <option value="Studio">Studio</option>
+                                    <option value="1 Bedroom">1 Bedroom</option>
+                                    <option value="2 Bedroom">2 Bedroom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                            <div><label class="form-label">ชั้น</label><input type="text" id="inp-floor"
+                                    class="form-input" placeholder="ชั้น"></div>
+                            <div><label class="form-label">ขนาด (ตร.ม.)</label><input type="number" id="inp-size"
+                                    class="form-input" placeholder="0"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2 -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-tag"></i> ราคาและสถานะ</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                            <div><label class="form-label">เช่า (บาท)</label><input type="number" id="inp-rent"
+                                    class="form-input" placeholder="0"></div>
+                            <div><label class="form-label">ขาย (บาท)</label><input type="number" id="inp-sell"
+                                    class="form-input" placeholder="0"></div>
+                        </div>
+                        <label class="form-label">สถานะปัจจุบัน</label>
+                        <select id="inp-status" class="form-select" onchange="toggleContract()">
+                            <option value="post">✅ ว่าง (ประกาศ)</option>
+                            <option value="pending">⚠️ รอดำเนินการ</option>
+                            <option value="contract">🔐 ติดสัญญา</option>
+                            <option value="trash">🗑️ ถังขยะ</option>
+                        </select>
+                        <label class="form-label">รายละเอียดเพิ่มเติม</label>
+                        <textarea id="inp-details" class="form-textarea" rows="3"
+                            placeholder="ระบุรายละเอียด..."></textarea>
+
+                        <!-- Admin Note -->
+                        <div
+                            style="margin-top:15px; background:var(--bg-secondary); padding:10px; border-radius:8px; border:1px dashed var(--text-muted);">
+                            <label class="form-label" style="font-size:0.85rem;"><i class="fas fa-lock"></i>
+                                บันทึกสำหรับแอดมิน (ไม่แสดงหน้าเว็บ)</label>
+                            <textarea id="inp-admin-note" class="form-textarea" rows="2"
+                                placeholder="เช่น ผู้เช่าชื่อ... เบอร์โทร... (เห็นเฉพาะแอดมิน)"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Section 3 -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-images"></i> รูปภาพ</div>
+                        <div class="image-preview-grid" id="preview-grid">
+                            <div class="upload-box" onclick="document.getElementById('inp-images').click()">
+                                <i class="fas fa-plus upload-add"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="inp-images" multiple accept="image/*" class="hidden"
+                            onchange="handleImageSelect(this)">
+                    </div>
+
+                    <!-- Section 4 -->
+                    <div class="form-section">
+                        <div class="form-section-title"><i class="fas fa-file-contract"></i> เอกสาร</div>
+
+                        <label class="form-label">สัญญาเจ้าของ</label>
+                        <div class="premium-upload" onclick="document.getElementById('inp-owner-contract').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span id="txt-owner">คลิกเพื่ออัปโหลดไฟล์</span>
+                        </div>
+                        <div id="link-owner" style="margin-top:10px;"></div>
+                        <input type="file" id="inp-owner-contract" class="hidden"
+                            onchange="updateFileName('txt-owner', this)">
+
+                        <div id="contract-section" class="hidden"
+                            style="margin-top:20px; border-top:1px dashed #e2e8f0; padding-top:20px;">
+                            <label class="form-label" style="color:var(--primary);">สัญญาผู้เช่า</label>
+                            <div class="premium-upload" onclick="document.getElementById('inp-tenant-contract').click()"
+                                style="border-color:#93c5fd; background:#eff6ff;">
+                                <i class="fas fa-file-signature" style="color:var(--primary);"></i>
+                                <span id="txt-tenant">คลิกเพื่ออัปโหลดสัญญาเช่า</span>
+                            </div>
+                            <div id="link-tenant" style="margin-top:10px;"></div>
+                            <input type="file" id="inp-tenant-contract" class="hidden"
+                                onchange="updateFileName('txt-tenant', this)">
+
+                            <label class="form-label" style="margin-top:15px;">ระยะเวลาสัญญา</label>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                <input type="date" id="inp-start" class="form-input">
+                                <input type="date" id="inp-end" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">รายละเอียด</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-action" onclick="printRoom()" title="Print Poster"><i
+                            class="fas fa-print"></i></button>
+                    <button id="btn-quote" class="btn-action" onclick="openQuotationModal()"
+                        style="display:none; color:#4338ca; background:#e0e7ff;"><i
+                            class="fas fa-file-invoice-dollar"></i>
+                        จอง</button>
+                    <button id="btn-edit" class="btn-action" onclick="editCurrentRoom()"><i class="fas fa-pen"></i>
+                        แก้ไข</button>
+                    <button onclick="closeModal('detail-modal')" class="btn-action"><i
+                            class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="det-gallery"
+                    style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:25px;"></div>
+                <h2 id="det-title"
+                    style="text-align:center; margin:0; color:var(--text-main); font-size:2.2rem; font-weight:800; letter-spacing:-0.5px;">
+                </h2>
+                <div style="text-align:center; color:var(--text-muted); font-size:1.1rem; margin-top:5px;"
+                    id="det-subtitle"></div>
+
+                <div
+                    style="display:flex; justify-content:center; gap:20px; padding:20px; background:#f8fafc; border-radius:16px; margin-bottom:30px; margin-top:20px;">
+                    <div style="text-align:center;">
+                        <small
+                            style="color:var(--text-muted); text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; font-weight:600;">ราคาเช่า</small>
+                        <div id="det-rent"
+                            style="font-weight:800; color:var(--primary); font-size:1.4rem; margin-top:5px;">-</div>
+                    </div>
+                    <div style="width:1px; background:#cbd5e1;"></div>
+                    <div style="text-align:center;">
+                        <small
+                            style="color:var(--text-muted); text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; font-weight:600;">ราคาขาย</small>
+                        <div id="det-sell"
+                            style="font-weight:800; color:var(--text-main); font-size:1.4rem; margin-top:5px;">-</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:12px; color:var(--text-main); font-weight:700;">รายละเอียดเพิ่มเติม</h4>
+                <p id="det-desc"
+                    style="line-height:1.8; color:var(--text-muted); margin-bottom:30px; font-size:0.95rem;"></p>
+
+                <div id="det-contracts" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;"></div>
+                <div id="det-dates-info"
+                    style="font-size:0.9rem; color:var(--status-contract-text); background:var(--status-contract-bg); padding:14px 20px; border-radius:12px; display:none; align-items:center; gap:10px; font-weight:600;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="if(event.target===this) closeLightbox()">
+        <div class="lb-close" onclick="closeLightbox()"><i class="fas fa-times"></i></div>
+        <div class="lb-nav lb-prev" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></div>
+        <div class="lb-nav lb-next" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></div>
+        <img id="lightbox-img" src="">
+    </div>
+
+    <!-- QUOTATION MODAL -->
+    <div class="modal-overlay" id="quotation-modal">
+        <div class="modal-box" style="max-width:400px; max-height:85vh; display:flex; flex-direction:column;">
+            <div class="modal-header">
+                <div class="modal-title">ออกใบจอง (Booking)</div>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="toggleQuotationHistory()" class="btn-action" title="ดูประวัติ"
+                        style="background:#e0e7ff; color:#4338ca;"><i class="fas fa-history"></i></button>
+                    <button onclick="closeModal('quotation-modal')" class="btn-action"><i
+                            class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body" style="overflow-y:auto;">
+                <!-- FORM VIEW -->
+                <div id="q-form-view">
+                    <div style="margin-bottom:15px;">
+                        <label class="form-label">ชื่อลูกค้า (Customer Name)</label>
+                        <input type="text" id="q-name" class="form-input" placeholder="สมชาย ใจดี">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label class="form-label">เบอร์โทร (Phone)</label>
+                        <input type="tel" id="q-phone" class="form-input" placeholder="08x-xxx-xxxx">
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label class="form-label">ยอดเงินจอง (Booking Fee)</label>
+                        <input type="number" id="q-fee" class="form-input" placeholder="ระบุจำนวนเงิน">
+                    </div>
+                    <div class="alert-box" style="margin-bottom:20px; font-size:0.85rem;">
+                        <i class="fas fa-info-circle"></i> ระบบจะสร้างไฟล์ PDF
+                        และบันทึกลงในโฟลเดอร์ของห้องนี้โดยอัตโนมัติ
+                    </div>
+                    <button onclick="generateQuotation()" class="btn-primary" style="width:100%;">
+                        <i class="fas fa-file-pdf"></i> สร้างเอกสาร (Generate PDF)
+                    </button>
+                </div>
+
+                <!-- HISTORY VIEW -->
+                <div id="q-history-view" style="display:none;">
+                    <button onclick="toggleQuotationHistory()"
+                        style="margin-bottom:15px; border:none; background:none; color:var(--text-muted); cursor:pointer;"><i
+                            class="fas fa-arrow-left"></i> กลับไปหน้าฟอร์ม</button>
+                    <div id="q-history-list" style="display:flex; flex-direction:column; gap:10px;">
+                        <div style="text-align:center; padding:20px; color:#cbd5e1;"><i
+                                class="fas fa-spinner fa-spin"></i> Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div class="main-sidebar" id="sidebar">
+        <div style="margin-bottom:30px;">
+            <h2 style="margin:0; color:var(--primary); font-size:1.8rem; font-weight:800;">HORIZON</h2>
+            <p style="margin:0; color:var(--text-muted); font-size:0.9rem;">Admin Panel</p>
+        </div>
+        <div class="sidebar-menu-item" onclick="openAddRoomModal(); toggleSidebar()"><i class="fas fa-plus"></i>
+            <span data-i18n="sb_new_room">เพิ่มห้องใหม่</span>
+        </div>
+        <div class="sidebar-menu-item" onclick="openSettings(); toggleSidebar()"><i class="fas fa-cog"></i>
+            <span data-i18n="sb_settings">ตั้งค่าเว็บไซต์</span>
+        </div>
+        <div class="sidebar-menu-item" onclick="filterList('trash', this); toggleSidebar()"><i class="fas fa-trash"></i>
+            <span data-i18n="sb_trash">ถังขยะ</span>
+        </div>
+        <div style="flex:1;"></div>
+        <div class="sidebar-menu-item danger" onclick="switchMode('public'); toggleSidebar()"><i
+                class="fas fa-sign-out-alt"></i> <span data-i18n="sb_logout">ออกจากระบบ</span>
+        </div>
+    </div>
+
+    <!-- DRAGGABLE FAB -->
+    <div id="contact-fab" class="fab-container">
+        <button class="fab-btn" onclick="openContactModal()"><i class="fas fa-comment-dots"></i></button>
+    </div>
+
+    <script>
+        function toggleLang() {
+            setLanguage(currentLang === 'th' ? 'en' : 'th');
+        }
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzPtrud44XZYfUK2hzBp5c6OVqZu-WjRGkVrSryqCjQ-LqxumozLGG_WzGeWl2yvCOC/exec';
+
+        let allRooms = [], currentRole = 'public', currentImages = [], currentRoomId = null;
+        let currentDetailImages = [], currentLightboxIndex = 0;
+        let contactLinks = { lineUrl: '#', mapUrl: '#' };
+        let currentLang = localStorage.getItem('site_lang') || 'th';
+
+        const TRANSLATIONS = {
+            th: {
+                nav_home: "หน้าหลัก",
+                nav_contact: "ติดต่อเรา",
+                filter_all: "ทั้งหมด",
+                filter_avail: "ว่าง",
+                filter_contract: "มีสัญญา",
+                sb_admin: "Admin Panel",
+                sb_new_room: "เพิ่มห้องใหม่",
+                sb_settings: "ตั้งค่าเว็บไซต์",
+                sb_trash: "ถังขยะ",
+                sb_logout: "ออกจากระบบ",
+                status_available: "ว่าง",
+                status_booked: "จองแล้ว",
+                status_contract: "มีผู้เช่า",
+                status_ma: "ซ่อมบำรุง",
+                status_sold: "ขายแล้ว",
+                status_trash: "ถังขยะ",
+                lbl_rent: "เช่า",
+                lbl_sell: "ขาย",
+                btn_booking: "ออกใบจอง",
+                btn_edit: "แก้ไข",
+                modal_booking_title: "ออกใบจอง (Booking)",
+                lbl_cust_name: "ชื่อลูกค้า (Customer Name)",
+                lbl_cust_phone: "เบอร์โทร (Phone)",
+                lbl_booking_fee: "ยอดเงินจอง (Booking Fee)",
+                btn_gen_pdf: "สร้างเอกสาร (PDF)",
+                btn_history: "ดูประวัติ",
+                txt_booking_success: "สร้างใบจองสำเร็จ!",
+                txt_booking_msg: "ไฟล์ถูกบันทึกในโฟลเดอร์สำหรับห้อง",
+                ph_name: "สมชาย ใจดี",
+                ph_phone: "08x-xxx-xxxx",
+                ph_fee: "ระบุจำนวนเงิน",
+                alert_pdf: "ระบบจะสร้างไฟล์ PDF และบันทึกลงในโฟลเดอร์ของห้องนี้โดยอัตโนมัติ",
+                // Admin Filters
+                af_avail: "ว่าง",
+                af_pending: "รอดำเนินการ",
+                af_contract: "ติดสัญญา",
+                // Login
+                login_title: "เข้าสู่ระบบแอดมิน",
+                login_desc: "กรุณากรอกรหัสผ่านเพื่อเข้าใช้งาน",
+                btn_login: "เข้าสู่ระบบ",
+                btn_cancel: "ยกเลิก",
+                // Filters
+                filter_studio: "สตูดิโอ",
+                filter_1bed: "1 ห้องนอน",
+                filter_2bed: "2 ห้องนอน",
+                // Settings
+                set_title: "ตั้งค่าเว็บไซต์",
+                set_view_menu: "ข้อมูลเว็บไซต์",
+                set_view_sec: "ความปลอดภัย",
+                set_view_desc_site: "จัดการลิงก์ Line และแผนที่",
+                set_view_desc_sec: "เปลี่ยนรหัสผ่านผู้ดูแลระบบ",
+                btn_back: "ย้อนกลับ",
+                btn_save: "บันทึกข้อมูล",
+                lbl_line: "Line Official Link",
+                lbl_map: "Google Maps Link",
+                lbl_old_pass: "รหัสผ่านปัจจุบัน",
+                lbl_new_pass: "รหัสผ่านใหม่",
+                ph_new_pass: "ตั้งรหัสผ่านใหม่"
+            },
+            en: {
+                nav_home: "Home",
+                nav_contact: "Contact Us",
+                filter_all: "All Rooms",
+                filter_avail: "Available",
+                filter_contract: "Occupied",
+                sb_admin: "Admin Panel",
+                sb_new_room: "Add New Room",
+                sb_settings: "Site Settings",
+                sb_trash: "Recycle Bin",
+                sb_logout: "Logout",
+                status_available: "Available",
+                status_booked: "Booked",
+                status_contract: "Occupied",
+                status_ma: "Maintenance",
+                status_sold: "Sold",
+                status_trash: "Trash",
+                lbl_rent: "Rent",
+                lbl_sell: "Sell",
+                btn_booking: "Issue Booking",
+                btn_edit: "Edit Room",
+                modal_booking_title: "Issue Booking",
+                lbl_cust_name: "Customer Name",
+                lbl_cust_phone: "Phone Number",
+                lbl_booking_fee: "Booking Fee",
+                btn_gen_pdf: "Generate PDF",
+                btn_history: "History",
+                txt_booking_success: "Booking Created!",
+                txt_booking_msg: "File saved to folder for room",
+                ph_name: "John Doe",
+                ph_phone: "+66 8x-xxx-xxxx",
+                ph_fee: "Enter Amount",
+                alert_pdf: "System will generate PDF and save to room folder automatically",
+                // Admin Filters
+                af_avail: "Available",
+                af_pending: "Pending",
+                af_contract: "Contract",
+                // Login
+                login_title: "Admin Login",
+                login_desc: "Please enter password to access",
+                btn_login: "Login",
+                btn_cancel: "Cancel",
+                // Filters
+                filter_studio: "Studio",
+                filter_1bed: "1BED",
+                filter_2bed: "2BED",
+                // Settings
+                set_title: "Site Settings",
+                set_view_menu: "Site Data",
+                set_view_sec: "Security",
+                set_view_desc_site: "Manage Line & Map Links",
+                set_view_desc_sec: "Change Admin Password",
+                btn_back: "Back",
+                btn_save: "Save Data",
+                lbl_line: "Line Official Link",
+                lbl_map: "Google Maps Link",
+                lbl_old_pass: "Current Password",
+                lbl_new_pass: "New Password",
+                ph_new_pass: "Enter new password"
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('site_lang', lang);
+            applyTranslations();
+            // Re-render list if active
+            renderList(currentRole === 'admin' ? (currentFilter === 'trash' ? allRooms.filter(r => r.status === 'trash') : allRooms.filter(r => r.status !== 'trash')) : allRooms);
+        }
+
+        function applyTranslations() {
+            const t = TRANSLATIONS[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' && el.getAttribute('placeholder')) {
+                        el.placeholder = t[key];
+                    } else {
+                        // Check if element has children (like icons). Use textNode replacement safely? 
+                        // Simplified: Just replace textContent but keep icons if separated?
+                        // For now, assume pure text or text inside specific spans. 
+                        // Better: Replace ONLY text contentNode.
+                        el.innerText = t[key];
+                    }
+                }
+            });
+
+            // Toggle Switch Visuals
+            const thBtn = document.querySelectorAll('#lang-switch-th');
+            const enBtn = document.querySelectorAll('#lang-switch-en');
+
+            if (currentLang === 'th') {
+                thBtn.forEach(el => el.classList.add('active'));
+                enBtn.forEach(el => el.classList.remove('active'));
+            } else {
+                thBtn.forEach(el => el.classList.remove('active'));
+                enBtn.forEach(el => el.classList.add('active'));
+            }
+        }
+
+        let secretClickCount = 0;
+        let secretClickTimer = null;
+        function handleSecretLogin() {
+            secretClickCount++;
+            if (secretClickCount >= 5) {
+                toggleLogin();
+                secretClickCount = 0;
+            }
+
+            // Reset count if no click within 2 seconds
+            clearTimeout(secretClickTimer);
+            secretClickTimer = setTimeout(() => {
+                secretClickCount = 0;
+            }, 2000);
+        }
+
+        window.onload = () => {
+            fetchSettings();
+            applyTranslations();
+            if (localStorage.getItem('juristic_admin_session') === 'true') switchMode('admin');
+            else switchMode('public');
+        };
+
+        function checkDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const roomNum = params.get('room');
+            if (roomNum) {
+                const room = allRooms.find(r => r.roomNumber === roomNum);
+                if (room) {
+                    openDetail(room);
+                    // Clear param to verify clean URL? No, keep it so refresh works.
+                } else {
+                    showToast(currentLang === 'th' ? "ขออภัย ห้องนี้ไม่ว่างแล้วหรือถูกลบไปแล้ว" : "Room not found or no longer available", "error");
+                }
+            }
+        }
+
+        function showToast(msg, type = 'info') {
+            const existing = document.getElementById('toast-noti');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'toast-noti';
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
+            document.body.appendChild(toast);
+
+            // Trigger Animation
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Auto Remove
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function switchMode(mode) {
+            currentRole = mode;
+            document.body.className = mode + '-mode';
+
+            const publicHero = document.getElementById('public-section');
+            const adminSection = document.getElementById('admin-section');
+            const navActions = document.getElementById('nav-actions');
+
+            if (mode === 'public') {
+                localStorage.removeItem('juristic_admin_session');
+                publicHero.classList.remove('hidden');
+                adminSection.classList.add('hidden');
+                document.getElementById('nav-actions').style.justifyContent = 'flex-end'; // Reset to Right
+                document.getElementById('contact-fab').style.display = 'block'; // Show FAB
+                // Inject Toggle ONLY (Login Hidden)
+                navActions.innerHTML = `
+                    <div style="display:flex; align-items:center;">
+                        <div class="lang-switch" onclick="toggleLang()">
+                            <span class="lang-opt ${currentLang === 'th' ? 'active' : ''}" id="lang-switch-th">TH</span>
+                            <span class="lang-opt ${currentLang === 'en' ? 'active' : ''}" id="lang-switch-en">EN</span>
+                        </div>
+                    </div>
+                `;
+                fetchRooms('public');
+            } else {
+                localStorage.setItem('juristic_admin_session', 'true');
+                publicHero.classList.add('hidden');
+                adminSection.classList.remove('hidden');
+                document.getElementById('nav-actions').style.justifyContent = 'space-between'; // Split Left/Right
+                document.getElementById('contact-fab').style.display = 'none'; // Hide FAB
+
+                navActions.innerHTML = `
+                    <div style="display:flex; align-items:center;">
+                         <h1 style="margin:0; font-size:1.4rem; background:linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:800; line-height:1;">HORIZON</h1>
+                         <span style="color:var(--text-muted); font-size:0.8rem; margin-left:8px; font-weight:500;" data-i18n="sb_admin" class="admin-label-text">Admin Dashboard</span>
+                    </div>
+                     <div class="admin-actions">
+                        <div class="lang-switch" onclick="toggleLang()" style="margin-right:0;">
+                            <span class="lang-opt ${currentLang === 'th' ? 'active' : ''}" id="lang-switch-th">TH</span>
+                            <span class="lang-opt ${currentLang === 'en' ? 'active' : ''}" id="lang-switch-en">EN</span>
+                        </div>
+                        <div class="noti-wrapper" onclick="toggleNotifSidebar()">
+                            <button class="btn-icon-circle"><i class="fas fa-bell"></i></button>
+                            <span id="noti-badge" class="noti-badge">0</span>
+                        </div>
+                        <button class="btn-icon-circle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                    </div>
+                `;
+                fetchRooms('admin');
+                // Re-apply translations for Admin Label
+                setTimeout(applyTranslations, 100);
+            }
+        }
+
+        async function fetchSettings() {
+            try {
+                const res = await fetch(`${GAS_API_URL}?action=get_settings&t=${new Date().getTime()}`);
+                const json = await res.json();
+                if (json.status === 'success') {
+                    contactLinks = json.data;
+                    const btnLine = document.getElementById('btn-contact-line');
+                    const btnMap = document.getElementById('btn-contact-map');
+                    if (btnLine) btnLine.href = contactLinks.lineUrl || '#';
+                    if (btnMap) btnMap.href = contactLinks.mapUrl || '#';
+                }
+            } catch (e) { console.error("Error fetching settings", e); }
+        }
+
+        async function fetchRooms(mode) {
+            const loader = mode === 'admin' ? document.getElementById('admin-loader') : document.getElementById('main-loader');
+            if (loader) loader.style.display = 'block';
+
+            // Clear lists
+            if (mode === 'admin') {
+                const existing = document.getElementById('admin-section').querySelector('.room-list-view');
+                if (existing) existing.remove();
+            } else {
+                document.getElementById('room-list-container').innerHTML = '';
+            }
+
+            try {
+                const res = await fetch(`${GAS_API_URL}?action=read&mode=${mode}`);
+                const json = await res.json();
+                if (json.status === 'success') {
+                    allRooms = json.data;
+                    if (mode === 'admin') {
+                        filterList('post', document.querySelector('.af-btn[onclick*="post"]'));
+                        updateNotifications();
+                    } else {
+                        // Default filter for public to 'Studio'
+                        filterList('Studio', document.querySelector('.filter-btn[data-filter="Studio"]'));
+                    }
+                    const countEl = document.getElementById('room-count');
+                    if (countEl) countEl.innerText = `${allRooms.length} Items`;
+
+                    // Deep Link Check (Only in Public Mode)
+                    if (mode === 'public') checkDeepLink();
+                }
+            } catch (e) { console.error(e); }
+            finally { if (loader) loader.style.display = 'none'; }
+        }
+
+        function renderList(rooms) {
+            const container = currentRole === 'admin'
+                ? document.getElementById('admin-section')
+                : document.getElementById('room-list-container');
+
+            // Sorting Logic: 1. Status (Post first) 2. Type (Studio > 1Bed > 2Bed) 3. Floor (Numeric)
+            const typeOrder = { 'Studio': 1, '1 Bedroom': 2, '2 Bedroom': 3 };
+            const statusOrder = { 'post': 1, 'pending': 2, 'contract': 3, 'trash': 4 };
+
+            rooms.sort((a, b) => {
+                // If Admin, prioritize Status First
+                if (currentRole === 'admin') {
+                    const sa = statusOrder[a.status] || 99;
+                    const sb = statusOrder[b.status] || 99;
+                    if (sa !== sb) return sa - sb;
+                }
+
+                // Then Sort by Type
+                const ta = typeOrder[a.type] || 99;
+                const tb = typeOrder[b.type] || 99;
+                if (ta !== tb) return ta - tb;
+
+                // Then Sort by Floor (Desc)
+                return (Number(b.floor) || 0) - (Number(a.floor) || 0);
+            });
+
+            if (currentRole === 'admin') {
+                const existingList = container.querySelector('.room-list-view');
+                if (existingList) existingList.remove();
+
+                const listWrapper = document.createElement('div');
+                listWrapper.className = 'room-list-view';
+                container.appendChild(listWrapper);
+
+                rooms.forEach(r => {
+                    const item = document.createElement('div');
+                    item.className = 'room-list-item';
+                    item.onclick = () => openDetail(r);
+                    let img = 'https://via.placeholder.com/100';
+                    try { const i = JSON.parse(r.images || '[]'); if (i.length) img = i[0].startsWith('http') || i[0].startsWith('data:') ? i[0] : `https://lh3.googleusercontent.com/d/${i[0]}=s200`; } catch (e) { }
+
+                    let priceDisplay = '-';
+                    const rent = r.rentPrice ? `${TRANSLATIONS[currentLang].lbl_rent} ฿${Number(r.rentPrice).toLocaleString()}` : '';
+                    const sell = r.sellPrice ? `${TRANSLATIONS[currentLang].lbl_sell} ฿${Number(r.sellPrice).toLocaleString()}` : '';
+                    if (rent && sell) priceDisplay = `${rent} | ${sell}`;
+                    else if (rent) priceDisplay = rent;
+                    else if (sell) priceDisplay = sell;
+
+                    let badgeStyle = '';
+                    let badgeText = r.status;
+                    const t = TRANSLATIONS[currentLang];
+
+                    if (t['status_' + r.status]) badgeText = t['status_' + r.status];
+
+                    if (r.status === 'post') { badgeStyle = 'color:#15803d; background:#dcfce7;'; }
+                    else if (r.status === 'contract') { badgeStyle = 'color:#1e40af; background:#dbeafe;'; }
+                    else if (r.status === 'pending') { badgeStyle = 'color:#854d0e; background:#fef9c3;'; }
+                    else { badgeStyle = 'color:#b91c1c; background:#fee2e2;'; }
+
+                    const infoDisplay = `ชั้น ${r.floor || '-'} • ${r.size || '-'} ตร.ม.`;
+
+                    item.innerHTML = `
+                        <img src="${img}" class="list-thumb">
+                        <div class="list-info">
+                            <div class="list-top" style="justify-content: flex-start; gap: 10px;">
+                                <div class="list-room-no">
+                                    ${r.roomNumber} 
+                                    <span class="list-room-type">(${r.type})</span>
+                                    <span class="list-price" style="font-size:0.95rem; margin-left: 10px; color: var(--primary);">${priceDisplay}</span>
+                                </div>
+                            </div>
+                            <div class="list-bottom">
+                                <div>${infoDisplay}</div>
+                                <div class="list-status-badge" style="${badgeStyle}">${badgeText}</div>
+                            </div>
+                            ${r.adminNote ? `<div style="margin-top:8px; font-size:0.8rem; color:#f43f5e; background:#fff1f2; padding:4px 8px; border-radius:6px; border:1px dashed #fecdd3;"><i class="fas fa-lock" style="font-size:0.7rem; margin-right:4px;"></i> ${r.adminNote}</div>` : ''}
+                        </div>
+                    `;
+                    listWrapper.appendChild(item);
+                });
+            } else {
+                container.innerHTML = '';
+                rooms.forEach(r => {
+                    let img = 'https://via.placeholder.com/400';
+                    try { const i = JSON.parse(r.images || '[]'); if (i.length) img = i[0].startsWith('http') || i[0].startsWith('data:') ? i[0] : `https://lh3.googleusercontent.com/d/${i[0]}=s500`; } catch (e) { }
+
+                    let priceDisplay = '<div style="color:#94a3b8; font-weight:500;">-</div>';
+                    let pContent = '';
+                    if (r.rentPrice) pContent += `<div style="color:var(--primary); font-weight:600; margin-bottom:2px;">${TRANSLATIONS[currentLang].lbl_rent} ฿${Number(r.rentPrice).toLocaleString()}</div>`;
+                    if (r.sellPrice) pContent += `<div style="color:var(--text-main); font-weight:600;">${TRANSLATIONS[currentLang].lbl_sell} ฿${Number(r.sellPrice).toLocaleString()}</div>`;
+
+                    if (pContent) priceDisplay = `<div style="display:flex; flex-direction:column;">${pContent}</div>`;
+
+                    const card = document.createElement('div');
+                    card.className = 'room-card';
+                    card.onclick = () => openDetail(r);
+                    card.innerHTML = `
+                        <div class="card-img-container">
+                            <img src="${img}" class="card-img" loading="lazy">
+                            <div class="card-tag">${r.type}</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">${r.roomNumber}</div>
+                            <div class="card-info">
+                                <span><i class="fas fa-layer-group"></i> Fl. ${r.floor}</span>
+                                <span><i class="fas fa-ruler-combined"></i> ${r.size} sq.m.</span>
+                            </div>
+                            <div class="card-price">
+                                ${priceDisplay}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        function filterList(type, btn) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (currentRole === 'admin') {
+                if (type === 'all') renderList(allRooms.filter(r => r.status !== 'trash'));
+                else renderList(allRooms.filter(r => r.status === type));
+            } else {
+                if (type === 'all') renderList(allRooms);
+                else renderList(allRooms.filter(r => r.type === type));
+            }
+        }
+
+        function openDetail(room) {
+            currentRoomId = room.id;
+            document.getElementById('det-title').innerText = room.roomNumber;
+            document.getElementById('det-subtitle').innerText = `${room.type} • Fl. ${room.floor} • ${room.size} sq.m.`;
+            document.getElementById('det-rent').innerText = room.rentPrice ? Number(room.rentPrice).toLocaleString() : '-';
+            document.getElementById('det-sell').innerText = room.sellPrice ? Number(room.sellPrice).toLocaleString() : '-';
+            document.getElementById('det-desc').innerText = room.details || '-';
+
+            // Gallery
+            const gal = document.getElementById('det-gallery');
+            gal.innerHTML = '';
+            let imgs = []; try { imgs = JSON.parse(room.images || '[]'); } catch (e) { }
+            currentDetailImages = imgs;
+
+            imgs.slice(0, 6).forEach((src, idx) => {
+                let url = src.startsWith('http') || src.startsWith('data:') ? src : `https://lh3.googleusercontent.com/d/${src}=s500`;
+                gal.innerHTML += `<div style="aspect-ratio:1; border-radius:12px; overflow:hidden; cursor:pointer;" onclick="openLightbox(${idx})"><img src="${url}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+            });
+
+            // Contracts (Admin)
+            const conDiv = document.getElementById('det-contracts');
+            const dateDiv = document.getElementById('det-dates-info');
+            conDiv.innerHTML = ''; dateDiv.style.display = 'none';
+            document.getElementById('btn-edit').style.display = currentRole === 'admin' ? 'block' : 'none';
+            document.getElementById('btn-quote').style.display = currentRole === 'admin' ? 'block' : 'none';
+
+            if (currentRole === 'admin') {
+                if (room.adminNote) {
+                    conDiv.innerHTML += `<div style="background:#fff1f2; color:#be123c; padding:10px; border-radius:8px; margin-bottom:15px; border:1px dashed #fda4af;">
+                        <i class="fas fa-lock"></i> <b>Admin Note:</b> ${room.adminNote}
+                     </div>`;
+                }
+                if (room.ownerContract && room.ownerContract != '#') {
+                    conDiv.innerHTML += `<a href="${room.ownerContract}" target="_blank" class="btn-view-contract"><i class="fas fa-file-contract"></i> Owner Contract</a>`;
+                }
+                if (room.status === 'contract') {
+                    if (room.tenantContract) conDiv.innerHTML += `<a href="${room.tenantContract}" target="_blank" class="btn-view-contract"><i class="fas fa-file-signature"></i> Tenant Contract</a>`;
+                    dateDiv.style.display = 'flex';
+                    // Show Start - End
+                    const s = room.contractStart ? formatDate(room.contractStart) : '-';
+                    const e = room.contractEnd ? formatDate(room.contractEnd) : '-';
+                    dateDiv.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px; font-size:0.9rem;">
+                        <div><i class="far fa-calendar-alt"></i> Start: <span style="font-weight:600; color:var(--text-main);">${s}</span></div>
+                        <div><i class="far fa-clock"></i> End: <span style="font-weight:600; color:#ef4444;">${e}</span></div>
+                    </div>`;
+                }
+            }
+            openModal('detail-modal');
+        }
+
+        // --- Notification Logic ---
+        let currentNotifFilter = 30;
+
+        function toggleNotifSidebar() {
+            const sidebar = document.getElementById('notif-sidebar');
+            const overlay = document.getElementById('notif-overlay');
+            sidebar.classList.toggle('active');
+
+            if (sidebar.classList.contains('active')) {
+                overlay.classList.add('active');
+                updateNotifications(); // Refresh on open
+                if (r.tenantContract) {
+                    document.getElementById('txt-tenant').innerText = 'File Uploaded';
+                    document.getElementById('link-tenant').innerHTML = `<a href="${r.tenantContract}" target="_blank" class="file-link"><i class="fas fa-external-link-alt"></i> View File</a>`;
+                } else { document.getElementById('link-tenant').innerHTML = ''; }
+
+                setTimeout(initImageSortable, 100); // Init sortable
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function filterNotif(days, btn) {
+            currentNotifFilter = days;
+            // Update active button state
+            document.querySelectorAll('.notif-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateNotifications();
+        }
+
+        function updateNotifications() {
+            const now = new Date();
+            let count = 0;
+            const notifList = document.getElementById('notification-list');
+            if (notifList) notifList.innerHTML = '';
+
+            // We count total for badge based on 30 days (default critical), but list shows based on filter
+            let badgeCount = 0;
+
+            allRooms.forEach(r => {
+                if (r.status === 'contract' && r.contractEnd) {
+                    const end = new Date(r.contractEnd);
+                    if (isNaN(end.getTime())) return;
+                    const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+
+                    // Count for badge (always <= 30 days)
+                    if (diff <= 30 && diff >= -30) badgeCount++;
+
+                    // List Display
+                    if (diff <= currentNotifFilter && diff >= -30) {
+                        if (notifList) {
+                            const dayTxt = diff < 0 ? `Expired ${Math.abs(diff)} days ago` : `${diff} days left`;
+                            const item = document.createElement('div');
+                            item.className = 'notif-item';
+                            item.onclick = () => { toggleNotifSidebar(); openDetail(r); };
+                            item.innerHTML = `
+                                <div>
+                                    <div style="font-weight:700; color:#7f1d1d;">Room ${r.roomNumber}</div>
+                                    <div class="notif-sub">Expire: ${formatDate(r.contractEnd)}</div>
+                                </div>
+                                <div style="font-weight:800; color:${diff < 0 ? '#ef4444' : '#f97316'}; font-size:0.85rem;">${dayTxt}</div>
+                           `;
+                            notifList.appendChild(item);
+                        }
+                    }
+                }
+            });
+
+            // Update Badge
+            const badge = document.getElementById('noti-badge');
+            if (badge) {
+                if (badgeCount > 0) {
+                    badge.style.display = 'flex';
+                    badge.innerText = badgeCount;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // Empty State
+            if (notifList && notifList.children.length === 0) {
+                notifList.innerHTML = `<div style="text-align:center; color:#cbd5e1; padding:30px;"><i class="far fa-check-circle" style="font-size:2rem; margin-bottom:10px;"></i><br>No expiring contracts</div>`;
+            }
+        }
+
+        function showNotificationModal() {
+            updateNotifications();
+            const notifList = document.getElementById('notification-list');
+            if (notifList && notifList.children.length > 0) {
+                openModal('notification-modal');
+            } else {
+                showToast('ไม่มีการแจ้งเตือนใหม่', 'info');
+            }
+        }
+
+        // --- Helpers ---
+        function formatDate(d) { if (!d) return '-'; const date = new Date(d); return isNaN(date) ? d : `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; }
+
+        function toggleLogin() {
+            const m = document.getElementById('login-modal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const p = document.getElementById('login-pass').value;
+            const btn = document.getElementById('btn-login-submit');
+            const txt = document.getElementById('login-text');
+
+            // Loading State
+            btn.disabled = true;
+            const originalText = txt.innerText;
+            txt.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Checking...`;
+
+            try {
+                const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', data: { password: p } }) });
+                const j = await res.json();
+
+                if (j.status === 'success') {
+                    toggleLogin();
+                    switchMode('admin');
+                    document.getElementById('login-pass').value = '';
+                    showToast('เข้าสู่ระบบสำเร็จ', 'success');
+                } else {
+                    showToast('รหัสผ่านไม่ถูกต้อง', 'error');
+                }
+            } catch (e) {
+                showToast('การเชื่อมต่อขัดข้อง', 'error');
+            } finally {
+                // Restore State
+                btn.disabled = false;
+                txt.innerText = originalText;
+            }
+        }
+
+        // --- Form Logic ---
+        function openAddRoomModal() {
+            document.getElementById('room-form').reset();
+            currentRoomId = null; currentImages = [];
+            document.getElementById('preview-grid').innerHTML = `<div class="upload-box upload-add" onclick="document.getElementById('inp-images').click()"><i class="fas fa-plus"></i></div>`;
+            updateFileName('txt-owner', { files: [] }); updateFileName('txt-tenant', { files: [] });
+            toggleContract();
+            openModal('edit-modal');
+            setTimeout(initImageSortable, 100);
+            setTimeout(initDragDrop, 100); // Init Drag & Drop
+        }
+
+        function editCurrentRoom() {
+            closeModal('detail-modal'); openModal('edit-modal');
+            const r = allRooms.find(x => x.id === currentRoomId);
+            document.getElementById('room-id').value = r.id;
+            document.getElementById('existing-owner-contract').value = r.ownerContract || "";
+            document.getElementById('existing-tenant-contract').value = r.tenantContract || "";
+            document.getElementById('inp-admin-note').value = r.adminNote || ""; // Set Admin Note
+
+            // Replaced the verbose logic with these calls, assuming updateUploadLabel is defined elsewhere
+            updateUploadLabel('txt-owner', r.ownerContract, 'link-owner');
+            updateUploadLabel('txt-tenant', r.tenantContract, 'link-tenant');
+
+            document.getElementById('inp-room-number').value = r.roomNumber;
+            document.getElementById('inp-room-type').value = r.type;
+            document.getElementById('inp-floor').value = r.floor;
+            document.getElementById('inp-size').value = r.size;
+            document.getElementById('inp-rent').value = r.rentPrice;
+            document.getElementById('inp-sell').value = r.sellPrice;
+            document.getElementById('inp-status').value = r.status;
+            document.getElementById('inp-details').value = r.details;
+            if (r.contractStart) document.getElementById('inp-start').value = r.contractStart.substring(0, 10);
+            if (r.contractEnd) document.getElementById('inp-end').value = r.contractEnd.substring(0, 10);
+
+            try { currentImages = JSON.parse(r.images); } catch (e) { currentImages = []; }
+            renderPreviews();
+            toggleContract();
+
+            setTimeout(initImageSortable, 100);
+            setTimeout(initDragDrop, 100); // Init Drag & Drop
+        }
+
+        function toggleContract() {
+            const status = document.getElementById('inp-status').value;
+            const section = document.getElementById('contract-section');
+            if (status === 'contract') section.classList.remove('hidden');
+            else section.classList.add('hidden');
+        }
+
+        function updateFileName(id, el) {
+            const txt = el.files[0] ? el.files[0].name : 'Click to Upload';
+            document.getElementById(id).innerText = txt;
+        }
+
+        function handleImageSelect(input) {
+            processFiles(input.files);
+        }
+
+        function processFiles(files) {
+            Array.from(files).forEach(f => {
+                if (!f.type.startsWith('image/')) return; // Check if image
+                const r = new FileReader();
+                r.onload = e => { currentImages.push(e.target.result); renderPreviews(); };
+                r.readAsDataURL(f);
+            });
+        }
+
+        function renderPreviews() {
+            const g = document.getElementById('preview-grid');
+            g.innerHTML = `<div class="upload-box upload-add" onclick="document.getElementById('inp-images').click()"><i class="fas fa-plus"></i></div>`;
+
+            // Re-bind Drag Events because innerHTML cleared them? 
+            // Better to attach events to parent or re-attach here. 
+            // Actually, if we attach to 'preview-grid' once, and we only change its children (innerHTML), 
+            // the listener on 'preview-grid' (the container) should persist IF it wasn't replaced.
+            // But wait, renderPreviews modifies g.innerHTML, not g itself. So listeners on g stay.
+
+            currentImages.forEach((src, i) => {
+                const url = src.startsWith('data:') || src.startsWith('http') ? src : `https://lh3.googleusercontent.com/d/${src}=s200`;
+                const d = document.createElement('div');
+                d.className = 'upload-box';
+                d.setAttribute('data-src', src);
+                d.innerHTML = `<img src="${url}"><div class="del-img" onclick="deleteImage(${i}); event.stopPropagation();"><i class="fas fa-times"></i></div>`;
+                g.insertBefore(d, g.lastChild);
+            });
+        }
+
+        function deleteImage(index) {
+            currentImages.splice(index, 1);
+            renderPreviews();
+        }
+
+        // --- Drag & Drop ---
+        function initDragDrop() {
+            const dropZone = document.getElementById('preview-grid');
+            if (!dropZone) return;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+            });
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                processFiles(files);
+            }
+        }
+
+        function initImageSortable() {
+            const el = document.getElementById('preview-grid');
+            if (el && !el._sortable) {
+                el._sortable = new Sortable(el, {
+                    animation: 150,
+                    filter: '.upload-add', // 'Add' button is not draggable
+                    onMove: function (evt) {
+                        return evt.related.className.indexOf('upload-add') === -1; // Cannot swap with Add button
+                    },
+                    onEnd: function (evt) {
+                        // Reconstruct currentImages from DOM order
+                        const newImages = [];
+                        const boxes = el.querySelectorAll('.upload-box:not(.upload-add)');
+                        boxes.forEach(box => {
+                            const src = box.getAttribute('data-src');
+                            if (src) newImages.push(src);
+                        });
+                        currentImages = newImages;
+                        // We don't call renderPreviews() here to avoid flicker, as DOM is already updated.
+                        // But we might need to re-bind delete indices?
+                        // Actually, deleteImage uses index. If we don't re-render, the onclick index in DOM is stale.
+                        // So we MUST re-render or update indices. 
+                        // Re-rendering is safer to keep state consistent.
+                        renderPreviews();
+                    }
+                });
+            }
+        }
+
+        document.getElementById('room-form').onsubmit = async (e) => {
+            e.preventDefault();
+            document.getElementById('saving-overlay').classList.add('active');
+            const btn = document.querySelector('.save-btn');
+            btn.disabled = true;
+
+            const toBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+            const fo = document.getElementById('inp-owner-contract').files[0];
+            const ft = document.getElementById('inp-tenant-contract').files[0];
+
+            let bOwner = null; if (fo) bOwner = await toBase64(fo);
+            let bTenant = null; if (ft) bTenant = await toBase64(ft);
+
+            const payload = {
+                id: document.getElementById('room-id').value,
+                roomNumber: document.getElementById('inp-room-number').value,
+                type: document.getElementById('inp-room-type').value,
+                floor: document.getElementById('inp-floor').value,
+                size: document.getElementById('inp-size').value,
+                rentPrice: document.getElementById('inp-rent').value,
+                sellPrice: document.getElementById('inp-sell').value,
+                status: document.getElementById('inp-status').value,
+                details: document.getElementById('inp-details').value,
+                adminNote: document.getElementById('inp-admin-note').value, // Add adminNote to payload
+                existingImages: currentImages.filter(i => !i.startsWith('data:')),
+                newImages: currentImages.filter(i => i.startsWith('data:')),
+                newOwnerContract: bOwner,
+                newTenantContract: bTenant,
+                contractStart: document.getElementById('inp-start').value,
+                contractEnd: document.getElementById('inp-end').value
+            };
+
+            // Persistence Logic: Robust handling
+            // 1. If new file (bOwner) -> Send newOwnerContract
+            // 2. If NO new file -> Send ownerContract (old URL) AND delete newOwnerContract key
+            // 3. Try sending existingOwnerContract as well to match image pattern
+
+            const oldOwnerUrl = document.getElementById('existing-owner-contract').value;
+            const oldTenantUrl = document.getElementById('existing-tenant-contract').value;
+
+            if (!bOwner) {
+                if (oldOwnerUrl && oldOwnerUrl !== '#' && oldOwnerUrl !== '') {
+                    payload.ownerContract = oldOwnerUrl;
+                    payload.existingOwnerContract = oldOwnerUrl; // Try this pattern
+                    delete payload.newOwnerContract; // Remove key entirely so backend doesn't try to process null
+                }
+            }
+
+            if (!bTenant) {
+                if (oldTenantUrl && oldTenantUrl !== '#' && oldTenantUrl !== '') {
+                    payload.tenantContract = oldTenantUrl;
+                    payload.existingTenantContract = oldTenantUrl; // Try this pattern
+                    delete payload.newTenantContract; // Remove key entirely
+                }
+            }
+
+            try {
+                const res = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'save', data: payload })
+                });
+                const j = await res.json(); // Wait for response
+
+                if (j.status === 'success') {
+                    showToast('บันทึกข้อมูลเรียบร้อย', 'success');
+                    resetForm();
+                    closeModal('edit-modal');
+                    fetchRooms('admin');
+                } else {
+                    showToast('บันทึกไม่สำเร็จ: ' + (j.message || 'Unknown error'), 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('เกิดข้อผิดพลาดในการบันทึก', 'error');
+            }
+
+            document.getElementById('saving-overlay').classList.remove('active');
+            btn.disabled = false;
+        };
+
+        function resetForm() {
+            document.getElementById('room-form').reset();
+            document.getElementById('room-id').value = '';
+            currentRoomId = null;
+            currentImages = [];
+            renderPreviews();
+            document.getElementById('existing-owner-contract').value = '';
+            document.getElementById('existing-tenant-contract').value = '';
+            document.getElementById('inp-admin-note').value = ''; // Clear Admin Note
+            document.getElementById('txt-owner').innerText = "Click to Upload";
+            document.getElementById('txt-tenant').innerText = "Click to Upload";
+            document.getElementById('link-owner').innerHTML = "";
+            document.getElementById('link-tenant').innerHTML = "";
+            toggleContract();
+        }
+
+        function updateUploadLabel(eleId, fileDataOrUrl, linkId) {
+            const label = document.getElementById(eleId);
+            const linkDiv = document.getElementById(linkId);
+            let hasFile = false;
+            let url = '#';
+
+            // Check if file select input (File List) or URL string
+            if (typeof fileDataOrUrl === 'object' && fileDataOrUrl.files && fileDataOrUrl.files.length > 0) {
+                hasFile = true; // User selected a local file
+            } else if (typeof fileDataOrUrl === 'string' && fileDataOrUrl.length > 10 && fileDataOrUrl !== '#') {
+                hasFile = true;
+                url = fileDataOrUrl;
+            }
+
+            if (hasFile) {
+                if (url !== '#') {
+                    // Existing Cloud File
+                    label.innerHTML = `<span style="color:#16a34a; font-weight:600;"><i class="fas fa-check-circle"></i> มีไฟล์สัญญาแล้ว</span>`;
+                    if (linkDiv) linkDiv.innerHTML = `<a href="${url}" target="_blank" class="file-link" style="color:#16a34a; background:#dcfce7; border-color:#bbf7d0;"><i class="fas fa-external-link-alt"></i> ดูสัญญาเดิม</a>`;
+                } else {
+                    // Local File Selected
+                    const fileName = fileDataOrUrl.files[0].name;
+                    label.innerHTML = `<span style="color:#2563eb; font-weight:600;"><i class="fas fa-arrow-up"></i> รออัปโหลด: ${fileName}</span>`;
+                    if (linkDiv) linkDiv.innerHTML = '';
+                }
+            } else {
+                label.innerHTML = `คลิกเพื่ออัปโหลด`;
+                if (linkDiv) linkDiv.innerHTML = '';
+            }
+        }
+
+        /* --- SETTINGS LOGIC --- */
+        function switchSetView(view) {
+            ['menu', 'site', 'security'].forEach(v => document.getElementById(`set-view-${v}`).style.display = 'none');
+            document.getElementById(`set-view-${view}`).style.display = 'block';
+        }
+
+        async function saveSiteSettings(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> บันทึกข้อมูล...`;
+
+            try {
+                const res = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'save_settings',
+                        data: {
+                            lineUrl: document.getElementById('set-line-url').value,
+                            mapUrl: document.getElementById('set-map-url').value
+                        }
+                    })
+                });
+                const j = await res.json();
+                if (j.status === 'success') {
+                    showToast(j.message, 'success');
+                    contactLinks.lineUrl = document.getElementById('set-line-url').value;
+                    contactLinks.mapUrl = document.getElementById('set-map-url').value;
+                    switchSetView('menu');
+                } else showToast(j.message, 'error');
+            } catch (e) { showToast('เกิดข้อผิดพลาด', 'error'); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        async function saveSecuritySettings(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> เปลี่ยนรหัสผ่าน...`;
+
+            try {
+                const res = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'save_settings',
+                        data: {
+                            oldPassword: document.getElementById('set-old-pass').value,
+                            newPassword: document.getElementById('set-new-pass').value
+                        }
+                    })
+                });
+                const j = await res.json();
+                if (j.status === 'success') {
+                    showToast(j.message, 'success');
+                    document.getElementById('set-old-pass').value = '';
+                    document.getElementById('set-new-pass').value = '';
+                    switchSetView('menu');
+                } else showToast(j.message, 'error');
+            } catch (e) { showToast('เกิดข้อผิดพลาด', 'error'); }
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function openSettings() {
+            // Reset fields
+            document.getElementById('set-old-pass').value = '';
+            document.getElementById('set-new-pass').value = '';
+            document.getElementById('set-line-url').value = contactLinks.lineUrl || '';
+            document.getElementById('set-map-url').value = contactLinks.mapUrl || '';
+
+            // Default View
+            switchSetView('menu');
+            openModal('settings-modal');
+        }
+
+        function openContactModal() {
+            const line = contactLinks.lineUrl && contactLinks.lineUrl !== '#' ? contactLinks.lineUrl : '#';
+            const map = contactLinks.mapUrl && contactLinks.mapUrl !== '#' ? contactLinks.mapUrl : '#';
+
+            document.getElementById('btn-contact-line').href = line;
+            document.getElementById('btn-contact-map').href = map;
+
+            if (line === '#') document.getElementById('btn-contact-line').style.opacity = '0.5';
+            else document.getElementById('btn-contact-line').style.opacity = '1';
+
+            if (map === '#') document.getElementById('btn-contact-map').style.opacity = '0.5';
+            else document.getElementById('btn-contact-map').style.opacity = '1';
+
+            // Check if open from FAB (prevent opening if it was a drag)
+            if (window.isFabDrag) { window.isFabDrag = false; return; }
+
+            openModal('contact-modal');
+        }
+
+        // --- FAB DRAGGABLE LOGIC ---
+        (function initFabDrag() {
+            const fab = document.getElementById('contact-fab');
+            if (!fab) return;
+
+            let isDragging = false, startX, startY, initialLeft, initialTop;
+            const btn = fab.querySelector('button');
+
+            // Mouse Events
+            fab.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+
+            // Touch Events
+            fab.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('touchmove', dragMove, { passive: false });
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                if (e.type === 'mousedown' && e.button !== 0) return; // Only left click
+
+                isDragging = false;
+                window.isFabDrag = false;
+
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX; startY = e.clientY;
+                }
+
+                const rect = fab.getBoundingClientRect();
+                // We use offsetLeft/Top if explicitly set, otherwise compute from rect
+                // But fab is fixed bottom right initially.
+                // We need to switch to fixed 'top/left' positioning for dragging
+
+                initialLeft = rect.left;
+                initialTop = rect.top;
+            }
+
+            function dragMove(e) {
+                if (!startX) return; // Not started
+
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX; clientY = e.clientY;
+                }
+
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                    isDragging = true;
+                    window.isFabDrag = true;
+                    if (e.cancelable) e.preventDefault();
+                }
+
+                if (isDragging) {
+                    fab.style.bottom = 'auto';
+                    fab.style.right = 'auto';
+                    fab.style.left = `${initialLeft + dx}px`;
+                    fab.style.top = `${initialTop + dy}px`;
+                }
+            }
+
+            function dragEnd(e) {
+                startX = null; startY = null;
+                if (isDragging) {
+                    // Keep flag true for a moment to block click
+                    setTimeout(() => { window.isFabDrag = false; }, 100);
+                }
+                isDragging = false;
+            }
+        })();
+
+
+        // Lightbox
+        function openLightbox(i) { currentLightboxIndex = i; updateLB(); document.getElementById('lightbox').classList.add('active'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+        function changeSlide(n) { currentLightboxIndex += n; if (currentLightboxIndex >= currentDetailImages.length) currentLightboxIndex = 0; if (currentLightboxIndex < 0) currentLightboxIndex = currentDetailImages.length - 1; updateLB(); }
+        function updateLB() {
+            const src = currentDetailImages[currentLightboxIndex];
+            const url = src.startsWith('http') || src.startsWith('data:') ? src : `https://lh3.googleusercontent.com/d/${src}=s1600`;
+            document.getElementById('lightbox-img').src = url;
+        }
+
+        // --- Toast System ---
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+
+            toast.className = `toast-item ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${icon}" style="font-size:1.2rem;"></i>
+                <span style="flex:1;">${msg}</span>
+                <i class="fas fa-times toast-close" onclick="this.parentElement.remove()"></i>
+            `;
+
+            container.appendChild(toast);
+
+            // Auto Remove
+            setTimeout(() => {
+                toast.style.animation = 'fadeOutRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // --- Print System ---
+        async function printRoom() {
+            if (!currentRoomId) return;
+            const r = allRooms.find(x => x.id === currentRoomId);
+            if (!r) return;
+
+            // Populate Data
+            document.getElementById('p-type').innerText = r.type ? r.type.toUpperCase() : '';
+            document.getElementById('p-number').innerText = r.roomNumber;
+            document.getElementById('p-size').innerText = r.size || '-';
+            document.getElementById('p-floor').innerText = r.floor || '-';
+
+            // Price Logic (If 0 or empty, hide or show dash)
+            const rent = r.rentPrice ? `฿${Number(r.rentPrice).toLocaleString()}` : '-';
+            const sell = r.sellPrice ? `฿${Number(r.sellPrice).toLocaleString()}` : '-';
+            document.getElementById('p-rent').innerText = rent;
+            document.getElementById('p-sell').innerText = sell;
+
+            // Populate Images (Max 6)
+            const g = document.getElementById('print-gallery');
+            g.innerHTML = '';
+            let imgs = [];
+            try { imgs = JSON.parse(r.images || '[]'); } catch (e) { }
+
+            const max = 6;
+            const imagePromises = [];
+
+            for (let i = 0; i < max; i++) {
+                const src = imgs[i];
+                let content = '';
+                if (src) {
+                    const url = src.startsWith('http') || src.startsWith('data:') ? src : `https://lh3.googleusercontent.com/d/${src}=s1000`; // Higher res for print
+                    content = `<img src="${url}" id="p-img-${i}">`;
+                } else {
+                    // Placeholder pattern
+                    content = `<div style="width:100%;height:100%;background:#f8fafc;display:flex;align-items:center;justify-content:center;color:#cbd5e1;"><i class="fas fa-image" style="font-size:3rem;"></i></div>`;
+                }
+                g.innerHTML += `<div class="print-img-box">${content}</div>`;
+
+                if (src) {
+                    imagePromises.push(new Promise((resolve) => {
+                        const img = document.getElementById(`p-img-${i}`);
+                        if (img.complete) resolve();
+                        else { img.onload = resolve; img.onerror = resolve; }
+                    }));
+                }
+            }
+
+            // Wait for QR Code as well
+            const qr = document.querySelector('.pf-qr');
+            if (qr && !qr.complete) {
+                imagePromises.push(new Promise(resolve => { qr.onload = resolve; qr.onerror = resolve; }));
+            }
+
+            await Promise.all(imagePromises);
+
+            // Small buffer for rendering
+            setTimeout(() => window.print(), 500);
+        }
+
+
+        // Override openContactModal to support toggle
+        function openContactModal() {
+            if (window.isFabDrag) return; // Prevent open on drag release
+            const modal = document.getElementById('contact-modal');
+            if (modal.classList.contains('active')) {
+                closeModal('contact-modal');
+            } else {
+                openModal('contact-modal');
+            }
+        }
+
+        // --- QUOTATION SYSTEM ---
+        function openQuotationModal() {
+            const r = allRooms.find(x => x.id === currentRoomId);
+            if (!r) return;
+
+            // Reset UI View
+            document.getElementById('q-form-view').style.display = 'block';
+            document.getElementById('q-history-view').style.display = 'none';
+
+            // Reset Form Values
+            document.getElementById('q-name').value = '';
+            document.getElementById('q-phone').value = '';
+            // Default Booking Fee
+            const rent = r.rentPrice ? parseInt(r.rentPrice) : 0;
+            document.getElementById('q-fee').value = rent > 0 ? rent : 5000;
+
+            openModal('quotation-modal');
+        }
+
+        function toggleQuotationHistory() {
+            const formView = document.getElementById('q-form-view');
+            const histView = document.getElementById('q-history-view');
+
+            if (histView.style.display === 'none') {
+                formView.style.display = 'none';
+                histView.style.display = 'block';
+                fetchQuotationHistory();
+            } else {
+                formView.style.display = 'block';
+                histView.style.display = 'none';
+            }
+        }
+
+        async function fetchQuotationHistory() {
+            const list = document.getElementById('q-history-list');
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> กำลังโหลดข้อมูล...</div>';
+
+            const r = allRooms.find(x => x.id === currentRoomId);
+            if (!r) return;
+
+            try {
+                const res = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'list_quotations',
+                        data: { roomNumber: r.roomNumber }
+                    })
+                });
+                const json = await res.json();
+                if (json.status === 'success') {
+                    renderQuotationHistory(json.data);
+                } else {
+                    list.innerHTML = `<div style="text-align:center; color:#ef4444;">Error: ${json.message}</div>`;
+                }
+            } catch (e) {
+                list.innerHTML = `<div style="text-align:center; color:#ef4444;">Connection Error</div>`;
+            }
+        }
+
+        function renderQuotationHistory(data) {
+            const list = document.getElementById('q-history-list');
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);">ไม่พบประวัติใบจอง</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            data.forEach(item => {
+                const d = new Date(item.date);
+                const dateStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
+
+                const div = document.createElement('div');
+                div.className = 'upload-box'; // Reuse style
+                div.style.flexDirection = 'row';
+                div.style.justifyContent = 'space-between';
+                div.style.padding = '10px 15px';
+                div.style.cursor = 'default';
+                div.style.height = 'auto';
+
+                div.innerHTML = `
+                    <div style="flex:1;">
+                        <div style="font-weight:600; color:var(--text-main); font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;">${item.name}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);"><i class="far fa-clock"></i> ${dateStr}</div>
+                    </div>
+                    <a href="${item.url}" target="_blank" class="btn-icon-circle" title="เปิดไฟล์" style="background:#e0e7ff; color:#4338ca; text-decoration:none; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                 `;
+                list.appendChild(div);
+            });
+        }
+
+        async function generateQuotation() {
+            const name = document.getElementById('q-name').value;
+            const phone = document.getElementById('q-phone').value;
+            const fee = document.getElementById('q-fee').value;
+
+            if (!name || !fee) { alert('กรุณาระบุชื่อลูกค้าและยอดเงินจอง'); return; }
+
+            const r = allRooms.find(x => x.id === currentRoomId);
+            if (!r) return;
+
+            // Show Loading
+            const btn = document.querySelector('#quotation-modal .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังสร้าง...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'create_quotation',
+                        data: {
+                            roomNumber: r.roomNumber,
+                            type: r.type,
+                            if: r.floor, floor: r.floor,
+                            size: r.size,
+                            rentPrice: r.rentPrice || 0,
+                            customerName: name,
+                            phone: phone,
+                            bookingFee: fee,
+                            lineUrl: contactLinks.lineUrl || ''
+                        }
+                    })
+                });
+                const json = await res.json();
+                if (json.status === 'success') {
+                    // SUCCESS UI Replacement
+                    const modalBody = document.querySelector('#quotation-modal .modal-body');
+                    modalBody.innerHTML = `
+                        <div style="text-align:center; padding:20px;">
+                            <div style="font-size:3rem; color:#06c755; margin-bottom:15px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);"><i class="fas fa-check-circle"></i></div>
+                            <h3 style="margin-bottom:10px; color:var(--text-main);">สร้างใบจองสำเร็จ!</h3>
+                            
+                            <a href="${json.pdfUrl}" target="_blank" class="btn-primary" 
+                               style="display:inline-flex; align-items:center; text-decoration:none; gap:10px; margin-top:15px; background:#4338ca; padding:12px 25px; border-radius:12px;">
+                                <i class="fas fa-print"></i> เปิดดูไฟล์ PDF (Print)
+                            </a>
+                            
+                            <p style="margin-top:25px; color:var(--text-muted); font-size:0.9rem; line-height:1.5;">
+                                ไฟล์ถูกบันทึกในโฟลเดอร์สำหรับห้อง <b>${r.roomNumber}</b> เรียบร้อยแล้ว<br>
+                                คุณสามารถส่งลิงก์หรือพิมพ์ใบจองจากหน้านั้นได้เลย
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + json.message);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert('Connection Error: ' + e.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>
